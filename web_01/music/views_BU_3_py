@@ -1,0 +1,33 @@
+#from django.http import HttpResponse, Http404
+
+#to use templates import this, this is thhe shortcut command
+from django.shortcuts import render, get_object_or_404
+
+#import database commands
+from .models import Album
+
+def music_main(request):
+    pageTitle = 'Albums'
+    all_albums = Album.objects.all()
+    #should be dictionary, this is where you put variables
+    context = {
+        'var_all_albums': all_albums,
+        'var_page_title': pageTitle,
+        }
+    #this code automatically look inside the templates folder
+    return render(request, 'music/music_main.html', context)
+
+def music_detail(request, album_ID):
+    '''try:
+        album = Album.objects.get(pk = album_ID)
+    except Album.DoesNotExist:
+        raise Http404("Album does not exist")
+    '''
+    #shortcut way of doin the above ^^
+    album = get_object_or_404(Album, pk = album_ID)
+
+    context = {
+        'var_album': album,
+        'var_songs': album.song_set.all()
+        }
+    return render(request, 'music/music_detail.html', context)

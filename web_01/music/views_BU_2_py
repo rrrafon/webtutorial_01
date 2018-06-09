@@ -1,0 +1,26 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+
+#to use templates import this
+from django.template import loader
+
+#import database commands
+from .models import Album
+
+def music_main(request):
+    pageTitle = 'Albums'
+    all_albums = Album.objects.all()
+    template = loader.get_template('music/music_main.html')
+
+    #should be dictionary, this is where you put variables
+    context = {
+        'var_all_albums': all_albums,
+        'var_page_title': pageTitle,
+    }
+
+    return HttpResponse(template.render(context, request))
+
+def music_detail(request, album_ID):
+    return HttpResponse("<h1> Details for Album ID: %s  <h2>" %str(album_ID))
+
+

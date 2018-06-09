@@ -1,0 +1,20 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+
+#import database commands
+from .models import Album
+
+def music_main(request):
+    all_albums = Album.objects.all()
+    html = ''
+
+    for album in all_albums:
+        url = '/music/%s/' % str(album.id)
+        html += '<a href = %s > %s </a> <br>' %(url, album.album_title)
+
+    return HttpResponse(html)
+
+def music_detail(request, album_ID):
+    return HttpResponse("<h1> Details for Album ID: %s  <h2>" %str(album_ID))
+
+

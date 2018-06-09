@@ -1,0 +1,26 @@
+<img src = "{{ var_album.album_logo }}">
+
+<h1> {{ var_album.album_artist }} </h1>
+<h3> {{ var_album.album_title }} </h3>
+
+<!-- This catches an error and returns a message  -->
+
+{% if var_errorMsg %}
+<p><strong> {{ var_errorMsg }} </strong></p>
+{% endif %}
+
+<form action = "{% url 'music:musicFavorite' var_album.id %}" method = "post">
+    {% csrf_token %} <!-- for security -->
+
+    {% for song in var_songs %}
+        <input type = "radio" id = "song{{ forloop.counter }}" name= "val_song"  value= "{{ song.id }}" />
+        <label for = "song{{ forloop.counter }}">
+            {{ song.song_title }}
+            {% if song.is_favorite %}
+                <img src = "http://www.iconsplace.com/icons/preview/aqua/rating-star-64.png" />
+            {% endif %}
+        </label><br>
+    {% endfor %}
+    <input type = "submit" value = "Favorite">
+</form>
+

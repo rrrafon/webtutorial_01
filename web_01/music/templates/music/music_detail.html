@@ -1,3 +1,34 @@
+<!-- loads path to static fil<es or css -->
+{% load staticfiles %}
+<!-- load bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+<!-- this command to load only the necssary files -->
+<link rel = "stylesheet" type = "text/css" href = "{% static 'music/style.css'%}" />
+
+
+
+<nav class="navbar navbar-default">
+    <div class = "container-fluid">
+        <div class = "navbar-header">
+
+            <button type="button" class="navbar-toggle" data-toggle = "collapse" data-target = "#topNavBar">
+                <span class = "icon-bar"> </span>
+                <span class = "icon-bar"> </span>
+                <span class = "icon-bar"> </span>
+            </button>
+
+            <a class = "navbar-brand" href = "{% url 'music:music' %}" >HOME</a>
+        </div>
+        <div class = "collapse navbar-collapse">
+            <ul class =  "nav navbar-nav">
+
+            </ul>
+
+        </div>
+
+    </div>
+</nav>
+
 <img src = "{{ var_album.album_logo }}">
 
 <h1> {{ var_album.album_artist }} </h1>
@@ -11,13 +42,14 @@
 
 <form action = "{% url 'music:musicFavorite' var_album.id %}" method = "post">
     {% csrf_token %} <!-- for security -->
-
+    <!-- iterates to create a radio button -->
     {% for song in var_songs %}
         <input type = "radio" id = "song{{ forloop.counter }}" name= "val_song"  value= "{{ song.id }}" />
+
         <label for = "song{{ forloop.counter }}">
             {{ song.song_title }}
             {% if song.is_favorite %}
-                <img src = "http://www.iconsplace.com/icons/preview/aqua/rating-star-64.png" />
+                <img src = "{% static 'music/star_01.png'%}" />
             {% endif %}
         </label><br>
     {% endfor %}

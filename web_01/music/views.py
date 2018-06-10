@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404
 #import database commands, '.' dot represents in this folder
 from .models import Album, Song
 
+
+
 def music_main(request):
     pageTitle = 'Albums'
     all_albums = Album.objects.all()

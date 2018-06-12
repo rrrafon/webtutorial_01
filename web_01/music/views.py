@@ -22,6 +22,7 @@ def music_detail(request, album_ID):
     album = get_object_or_404(Album, pk = album_ID)
 
     context = {
+        'var_page_title': album.artist,
         'var_album': album,
         'var_songs': album.song_set.all()
         }

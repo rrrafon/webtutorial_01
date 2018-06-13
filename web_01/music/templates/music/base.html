@@ -4,17 +4,16 @@
 <!-- loads path to static fil<es or css -->
 {% load staticfiles %}
 <!-- load bootstrap -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <!-- this loads your own css style -->
 <link rel = "stylesheet" type = "text/css" href = "{% static 'music/style.css'%}" />
 
 <head>
+
     <meta charset="UTF-8">
 
-    <title> {{var_page_title}} </title>
 
-
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-default">
         <div class = "container-fluid">
 
             <!-- Collapse button -->
@@ -54,7 +53,7 @@
 
                         <ul class = "nav navbar-nav navbar-right" >
                             <li class ="">
-                                <a href="#">
+                                <a href="{% url 'music:musicCreateAlbum' %}">
                                     <span class = "glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;
                                     Add Album
                                 </a>

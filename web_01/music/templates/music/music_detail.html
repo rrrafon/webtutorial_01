@@ -1,36 +1,21 @@
 <!-- this loads the base hmtl into this html -->
 {% extends 'music/base.html' %}
 
-
 {% block body %}
 
 {% load staticfiles %}
+<title> {{ album.artist }} </title>
 
-<img src = "{{ var_album.album_logo }}">
+<img src = "{{ album.album_logo.url }}" width=400>
 
-<h1> {{ var_album.album_artist }} </h1>
-<h3> {{ var_album.album_title }} </h3>
+<h3> {{ album.artist }} </h3>
+<h4> {{ album.album_title }} </h4>
 
-<!-- This catches an error and returns a message  -->
+{% for song in album.song_set.all %}
+    <ul>
+        <li> {{ song.song_title }} </li>
+    </ul>
 
-{% if var_errorMsg %}
-<p><strong> {{ var_errorMsg }} </strong></p>
-{% endif %}
-
-<form action = "{% url 'music:musicFavorite' var_album.id %}" method = "post">
-    {% csrf_token %} <!-- for security -->
-    <!-- iterates to create a radio button -->
-    {% for song in var_songs %}
-        <input type = "radio" id = "song{{ forloop.counter }}" name= "val_song"  value= "{{ song.id }}" />
-
-        <label for = "song{{ forloop.counter }}">
-            {{ song.song_title }}
-            {% if song.is_favorite %}
-                <img src = "{% static 'music/star_01.png'%}" />
-            {% endif %}
-        </label><br>
-    {% endfor %}
-    <input type = "submit" value = "Favorite">
-</form>
+{% endfor %}
 
 {% endblock %}

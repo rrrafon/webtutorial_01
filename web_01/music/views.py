@@ -1,57 +1,75 @@
-#to use templates import this, this is thhe shortcut command
-from django.shortcuts import render, get_object_or_404
+#GENERIC VIEWS
+from django.views import generic
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.urls import reverse_lazy
+from .models import Song, Album
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.views import generic
+from django.views.generic import View
+from .forms import UserForm
 
-#import database commands, '.' dot represents in this folder
-from .models import Album, Song
+
+class IndexView(generic.ListView):
+    template_name =  "music/music_main.html"
+    context_object_name = "var_all_albums"
+
+    def get_queryset(self):
+        return Album.objects.all()
+
+class DetailView(generic.DetailView):
+    model = Album
+    #--------location of the html inside music/templates
+    template_name = "music/music_detail.html"
+
+#lets user create a new album
+class AlbumCreate(CreateView):
+    model = Album
+    fields = ['artist', 'album_title', 'genre', 'album_logo']
 
 
+#lets user Edit an album
+class AlbumEdit(UpdateView):
+    model = Album
+    fields = ['artist', 'album_title', 'genre', 'album_logo']
 
-def music_main(request):
-    pageTitle = 'Albums'
-    all_albums = Album.objects.all()
-    #should be dictionary, this is where you put variables
-    context = {
-        'var_all_albums': all_albums,
-        'var_page_title': pageTitle,
-        }
-    #this code automatically look inside the templates folder
-    return render(request, 'music/music_main.html', context)
+class AlbumDelete(DeleteView):
+    model = Album
+    #------------------------- name inside url patterns
+    success_url = reverse_lazy('music:music')
 
-def music_detail(request, album_ID):
-    #gets the object or return 404 if not found
-    album = get_object_or_404(Album, pk = album_ID)
+class UserFormView(View):
+    form_class = UserForm
+    template_name = 'music/registration_form.html'
 
-    context = {
-        'var_page_title': album.artist,
-        'var_album': album,
-        'var_songs': album.song_set.all()
-        }
-    return render(request, 'music/music_detail.html', context)
+    # display a blank form
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form':form})
 
-def music_favorite(request, album_ID):
-    #gets the object or return 404 if not found
-    album = get_object_or_404(Album, pk = album_ID)
+    # process form data here
+    def post(self, request):
+        form = self.form_class(request.POST)
 
-    #Query database
-    try:
-        selected_song = album.song_set.get(pk = request.POST["val_song"])
+        if form.is_valid():
+            user = form.save(commit = False)
 
-    except (KeyError, Song.DoesNotExist):
-        return render(request, 'music/music_detail.html', {
-        'var_album': album,
-        'var_songs': album.song_set.all(),
-        'var_errorMsg': "You did not select a valid song",
-        })
+            #cleaned normalized data/formatted properly
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
 
-    else:
+            #this converts the plaintext password to hashed password
+            user.set_password(password)
+            user.save()
 
-        if selected_song.is_favorite == True:
-            selected_song.is_favorite = False
-        else:
-            selected_song.is_favorite = True
-        selected_song.save()
-        return render(request, 'music/music_detail.html', {
-        'var_album': album,
-        'var_songs': album.song_set.all(),
-        })
+            # returns if user credentials are correct
+            user = authenticate(username = username, password = password)
+
+            if user is not None:
+
+                if user.is_active:
+                    login(request, user)
+                    return redirect('music:music')
+
+        return render(request, self.template_name, {'form': form})
 

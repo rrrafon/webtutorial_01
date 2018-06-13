@@ -12,11 +12,16 @@ app_name = 'music'
 
 urlpatterns = [
     #/music/
-    path('', views.music_main, name = 'music'),
+    path('', views.IndexView.as_view() , name = 'music'),
+    # /music/register/  --> registers new user
+    path( 'register/', views.UserFormView.as_view() , name='musicRegister'),
     # /music/<album_ID>
-    path( '<album_ID>/', views.music_detail, name='musicDetails'),
-
-    # /music/Favorite logic will perform tasks in the BG but will remain/reload the page
-    path('<album_ID>/favorite/', views.music_favorite, name='musicFavorite'),
+    path( '<pk>/', views.DetailView.as_view() , name='musicDetails'),
+    # /music/album/add/
+    path( 'album/add/', views.AlbumCreate.as_view() , name='musicCreateAlbum'),
+    # /music/album/<album id>/
+    path( 'album/<pk>/', views.AlbumEdit.as_view() , name='musicEditAlbum'),
+    # /music/album/<album id>/delete/
+    path( 'album/<pk>/delete/', views.AlbumDelete.as_view() , name='musicDeleteAlbum'),
 
 ]

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 # each class creates a table and all variables correspond to a column
@@ -32,7 +33,11 @@ class Album(models.Model):
     artist = models.CharField(max_length= 150)
     album_title = models.CharField(max_length= 500)
     genre = models.CharField(max_length=150)
-    album_logo = models.CharField(max_length= 1000) #link to file
+    #album_logo = models.CharField(max_length= 1000) #link to file
+    album_logo = models.FileField()
+
+    def get_absolute_url(self):
+        return reverse('music:musicDetails', kwargs= {'pk': self.pk})
 
     #returns a nice name when called
     def __str__(self):
@@ -40,6 +45,7 @@ class Album(models.Model):
 
 
 class Song(models.Model):
+    #this name "album" is used in music_detail.html
     album = models.ForeignKey(Album,on_delete= models.CASCADE )
     file_type = models.CharField(max_length=20)
     song_title = models.CharField(max_length= 250)
@@ -47,5 +53,14 @@ class Song(models.Model):
 
     def __str__(self):
         return self.song_title
+
+
+
+
+
+
+
+
+
 
 
